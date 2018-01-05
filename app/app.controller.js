@@ -1,9 +1,12 @@
 angular.module("Ngblog")
-.controller("BlogCtrl", function($scope) {
-		$scope.nbArticles = 0;
-		$scope.listeArticle = false;
+.controller("BlogCtrl", function() {
+		this.listeArticle = false;
+		this.editArticle = false;
+		this.showContact = false;
 
-		$scope.articles = [{
+		this.newArticle = {};
+
+		this.articles = [{
 			id: 0,
 			title: "Deadpool 2 : Le héros « badass » est de retour dans un teaser déjanté",
 			content: "<b>Deadpool</b>, le ninja des temps modernes avec son costume 100% badass revient pour notre plus grand bonheur. A quelques mois de la sortie du nouveau film, nous avons pu voir le teaser et il est complètement dingue. Dans une vidéo de deux minutes, le héros totalement barré nous montre son improbable talent pour la peinture."
@@ -20,25 +23,88 @@ angular.module("Ngblog")
 			title: "Les Tuche 3",
 			content: "Jeff Tuche, le patriarche le plus déjanté de France se demande pourquoi il n’y a pas le TGV dans sa charmante ville de Bouzolles. Il demande des explications au président, mais celui-ci ne lui répondra pas. Devant cette absence de réponse, Jeff va donc prendre la décision irréversible de se présenter à l’élection et va même la gagner. Il ne s’y attendait pas, mais il est maintenant chef de l’état et des armées. Il devra donc assumer des responsabilités qu’il n’est pas prêt d’oublier."
 		},{
-			id: 4,
+			id: 8,
 			title: "Nintendo Switch : Il est temps pour toi de l’acheter jeune Padawan",
 			content: "Lorsqu’une nouvelle console est lancée, il y a toujours une période immédiatement après le lancement, pendant laquelle de nombreux joueurs attendent de savoir si la console en vaut vraiment la peine."
 		}];
 
-		$scope.removeArticle = function(id) {
-			let index = $scope.articles.findIndex((item) => item.id === id);
-			$scope.articles.splice(index,1);
+		this.removeArticle = function(id) {
+			let index = this.articles.findIndex((item) => item.id === id);
+			this.articles.splice(index,1);
 		};
 
-		$scope.recherche = "";
-		$scope.razRecherche = function() {
-			$scope.recherche = "";
-		}
+		this.recherche = "";
+		this.razRecherche = function() {
+			this.recherche = "";
+		};
+
+		// retourne l'Id du dernier article du tableau et si aucun article retourne -1
+		this.getLastId = function () {
+			if (this.articles.length !=0 ) {
+				return this.articles[this.articles.length-1].id;
+			} else {
+				return -1;
+			}
+		};
+
+		this.showListeArticle = function() {
+			this.listeArticle = true;
+			this.editArticle = false;
+			this.showContact = false;
+		};
+
+		this.editerArticle = function() {
+			this.listeArticle = false;
+			this.showContact = false;
+			this.editArticle = true;
+			this.newArticle.id = this.getLastId() +1 | 0;
+		};
+
+		this.validateArticle = function() {
+			this.articles.push(this.newArticle);
+			this.newArticle = {};
+			this.listeArticle = false;
+			this.editArticle = false;
+			this.showContact = false;
+		};
+
+		this.razForm = function() {
+			this.newArticle.title ="";
+			this.newArticle.content ="";
+		};
+
+		this.contact = function () {
+			this.listeArticle = false;
+			this.editArticle = false;
+			this.showContact = true;
+		};
+
+		this.log = function() {
+			console.log ("listeArticle = " + this.listeArticle);
+			console.log ("showContact = " + this.showContact);
+			console.log ("editArticle = " + this.editArticle);
+			console.log ("articles = " + this.articles);
+			console.log ("newArticle.id = " + this.newArticle.id);
+		};
+
+		this.optionsTinyMce = {
+			language: "fr_FR",
+			plugins: "emoticons | image",
+			statusbar: false,
+			menubar: "insert",
+			toolbar: 'undo redo | styleselect | bold italic | emoticons | image',
+			image_list: [
+    {title: 'My image 1', value: 'https://www.tinymce.com/my1.gif'},
+    {title: 'My image 2', value: 'http://www.moxiecode.com/my2.gif'},
+  ],
+			height: 200
+		};
+
 })
 .filter("SurbrillanceRecherche", function() {
 	return function(input, recherche) {
 		if(recherche) {
-			return input.replace(new RegExp("(" + recherche + ")", "gi"),"<span class='surbrillanceRecherche'>$1</span>")
+			return input.replace(new RegExp("(" + recherche + ")", "gi"),"<span class='surbrillanceRecherche'>$1</span>");
 		}
 		return input;
 	}

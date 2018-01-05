@@ -1,1 +1,1 @@
-angular.module("Ngblog",["ngSanitize"]);
+angular.module("Ngblog",["ngSanitize","ui.tinymce"]);
