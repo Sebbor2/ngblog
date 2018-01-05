@@ -1,0 +1,15 @@
+<<<<<<< HEAD
+# NPM
+node_modules/
+**/*.log
+
+# projet
+dist/
+=======
+# NPM
+node_modules/
+**/*.log
+
+# projet
+dist/
+>>>>>>> f8a1a5ff0a421de8ee9caf75cd40887dbf6691c2
