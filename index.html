@@ -7,41 +7,69 @@
 	<link rel="stylesheet" type="text/css" href="./node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
 	<link rel="stylesheet" type="text/css" href="./css/app.css">
 
+	<script type="text/javascript" src="./node_modules/tinymce/tinymce.min.js"></script>
 	<script type="text/javascript" src="./node_modules/angular/angular.min.js"></script>
 	<script type="text/javascript" src="./node_modules/angular-sanitize/angular-sanitize.min.js"></script>
+	<script type="text/javascript" src="./node_modules/angular-ui-tinymce/dist/tinymce.min.js"></script>
 	<script type="text/javascript" src="./app/app.module.js"></script>
 	<script type="text/javascript" src="./app/app.controller.js"></script>
 
 </head>
-<body ng-app="Ngblog" ng-controller="BlogCtrl">
+<body ng-app="Ngblog" ng-controller="BlogCtrl as Ctrl">
+	<button ng-click="Ctrl.log()" class="btn btn-danger"><span class="glyphicon glyphicon-log-in"></span></button>
 
 	<div class="container">
 
-		<div class="navbar">
-			<ul class="nav nav-pills spacer navbar-left">
-				<li class="active"><a href="#" ng-click="listeArticle = true">Blog</a></li>
-				<li><a href="#" ng-click="listeArticle = false">Contact</a></li>
+		<div class="spacer navbar">
+			<ul class="nav nav-pills navbar-left">
+				<li class=""><a href="#/listArticle" ng-click="Ctrl.showListeArticle()">Blog</a></li>
+				<li><a href="#/contact" ng-click="Ctrl.contact()">Contact</a></li>
 			</ul>
-			<ul class="navbar-right"><span class="glyphicon glyphicon-pencil"></span></ul>
+
+			<ul class="nav nav-pills navbar-right">
+				<li><a href="#/editArticle" ng-click="Ctrl.editerArticle()"><span class="glyphicon glyphicon-pencil"></span></a></li>
+			</ul>
 		</div>
 
-		<div ng-show="listeArticle">
+		<div ng-show="Ctrl.listeArticle">
+
 			<div class="alert alert-info">Il y a {{articlesFiltres.length}} articles dans le blog</div>
 
-			<div>
-				<div class="spacer input-group">
-					<div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
-					<input ng-model="recherche" type="text" class="form-control" placeholder="Rechercher un Article" />
-					<div class="input-group-btn"><button ng-click="razRecherche()" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button></div>
+			<div class="spacer input-group">
+				<div class="input-group-addon"><span class="glyphicon glyphicon-search"></span></div>
+				<input ng-model="recherche" type="text" class="form-control" placeholder="Rechercher un Article" />
+				<div class="input-group-btn"><button ng-click="razRecherche()" class="btn btn-default"><span class="glyphicon glyphicon-remove"></span></button></div>
+			</div>
+
+			<div class="well spacer" ng-repeat="article in articlesFiltres = (Ctrl.articles | filter:recherche)">
+				<a ng-click="Ctrl.removeArticle(article.id)"><span class="glyphicon glyphicon-remove-sign"></span></a>
+				<h3 ng-bind-html="article.title | SurbrillanceRecherche:recherche"></h3>
+				<p ng-bind-html="article.content | SurbrillanceRecherche:recherche"></p>
+			</div>
+
+		</div>
+
+		<div class="spacer" ng-show="Ctrl.editArticle">
+			<form name="nouvelArticle">
+				<div class="input-group">
+					<input type="text" class="form-control" ng-model="Ctrl.newArticle.title" placeholder="Titre" />
+				</div>
+				<div class="input-group spacer">
+					<textarea ui-tinymce="Ctrl.optionsTinyMce" rows="10" class="form-control" ng-model="Ctrl.newArticle.content"  placeholder="Description"></textarea>
 				</div>
 
-				<div class="well spacer" ng-repeat="article in articlesFiltres = (articles | filter:recherche)">
-					<a ng-click="removeArticle(article.id)"><span class="glyphicon glyphicon-remove-sign"></span></a>
-					<h3 ng-bind-html="article.title | SurbrillanceRecherche:recherche"></h3>
-					<p ng-bind-html="article.content | SurbrillanceRecherche:recherche"></p>
-				</div>
-			</div>
+				<div class="spacer text-center">
+	      	<button class="btn btn-success" ng-click="Ctrl.validateArticle()">Valider</button>
+	      	<span class="hSpacer"></span>
+	      	<button class="btn btn-warning" ng-click="Ctrl.razForm()">RAZ</button>
+	   		</div>
+
+	   		<div class="spacer">
+	   			<pre>{{Ctrl.newArticle | json}}</pre>
+	   		</div>
+			</form>
 		</div>
+
 	</div>
 
 </body>
