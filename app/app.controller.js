@@ -98,20 +98,32 @@ angular.module("Ngblog")
 		};
 
 		this.validateArticle = function() {
-			if (this.articles[this.getIndex(this.newArticle.id)].id === this.newArticle.id) {
-				// ecraser le précédent article
-				console.log("Article déjà existant, mise a jour OK");
-				if (this.newArticle.content.length > CONST_CHAR_MAX ) {
-					this.artBis[this.getIndex(this.newArticle.id)] = ({id: this.newArticle.id, charMax : CONST_CHAR_MAX, endArt: CONST_END_ART});	
-				} else {
-					this.artBis[this.getIndex(this.newArticle.id)] = ({id: this.newArticle.id, charMax : undefined, endArt: ''});
-				}
-			} else {
+			if (this.getIndex(this.newArticle.id) === -1 ) {
+				console.log("Nouvel Article, mise a jour OK");
 				this.articles.push(this.newArticle);
 				if (this.newArticle.content.length > CONST_CHAR_MAX ) {
 					this.artBis.push({id: this.newArticle.id, charMax : CONST_CHAR_MAX, endArt: CONST_END_ART});	
 				} else {
 					this.artBis.push({id: this.newArticle.id, charMax : undefined, endArt: ''});
+				}
+			} else {
+
+				if (this.articles[this.getIndex(this.newArticle.id)].id === this.newArticle.id) {
+					// ecraser le précédent article
+					console.log("Article déjà existant, mise a jour OK");
+					if (this.newArticle.content.length > CONST_CHAR_MAX ) {
+						this.artBis[this.getIndex(this.newArticle.id)] = ({id: this.newArticle.id, charMax : CONST_CHAR_MAX, endArt: CONST_END_ART});	
+					} else {
+						this.artBis[this.getIndex(this.newArticle.id)] = ({id: this.newArticle.id, charMax : undefined, endArt: ''});
+					}
+				} else {
+				console.log("Nouvel Article, mise a jour OK");
+					this.articles.push(this.newArticle);
+					if (this.newArticle.content.length > CONST_CHAR_MAX ) {
+						this.artBis.push({id: this.newArticle.id, charMax : CONST_CHAR_MAX, endArt: CONST_END_ART});	
+					} else {
+						this.artBis.push({id: this.newArticle.id, charMax : undefined, endArt: ''});
+					}
 				}
 			}
 			
